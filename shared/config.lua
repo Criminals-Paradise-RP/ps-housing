@@ -8,9 +8,9 @@ Config = {}
 
 -- If you're not utilizing ox_lib, it's time to question your approach.
 Config.Target = "ox" -- "ox" or "qb"
-Config.Notify = "ox" -- "ox" or "qb"
-Config.Radial = "ox" -- "ox" or "qb"
-Config.Inventory = "ox" -- "ox" or "qb"
+Config.Notify = "qb" -- "ox" or "qb"
+Config.Radial = "qb" -- "ox" or "qb"
+Config.Inventory = "qb" -- "ox" or "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
@@ -29,8 +29,9 @@ Config.DynamicDoors = false
 
 Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid properties!
     "police",
-    -- "police2",
-    -- "police3",
+    "sasp",
+    "bcso",
+    "sapr",
 }
 
 Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
@@ -109,7 +110,19 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
-    }
+    },
+
+    -- ['Alta Street'] = {
+    --     label = 'Alta Street',
+    --     door = { x = -269.38, y = -961.14, z = 31.22, h = 117.01, length = 1, width = 2 },
+    --     imgs = {
+    --         {
+    --             url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016221638686/fantasticplaza.webp?width=1281&height=671",
+    --             label = "Outside",
+    --         },
+    --     },
+    --     shell = "Apartment Furnished",
+    -- }
 }
 
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
