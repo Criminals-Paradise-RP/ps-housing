@@ -16,7 +16,7 @@ Config.Inventory = "qb" -- "ox" or "qb"
 Config.AccessCanEditFurniture = true
 
 -- Draw the poly for the property
-Config.DebugMode = true
+Config.DebugMode = false
 
 function Debug(...)
     if Config.DebugMode then
@@ -61,7 +61,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
+        shell = "House 1",
     },
     
     ["South Rockford Drive"] = {
@@ -73,7 +73,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
+        shell = "House 1",
     },
 
     ['Morningwood Blvd'] = {
@@ -85,7 +85,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
+        shell = "House 1",
     },
 
     ['Tinsel Towers'] = {
@@ -97,7 +97,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
+        shell = "House 1",
     },
 
     ['Fantastic Plaza'] = {
@@ -109,20 +109,20 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
+        shell = "House 1",
     },
 
-    -- ['Alta Street'] = {
-    --     label = 'Alta Street',
-    --     door = { x = -269.38, y = -961.14, z = 31.22, h = 117.01, length = 1, width = 2 },
-    --     imgs = {
-    --         {
-    --             url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016221638686/fantasticplaza.webp?width=1281&height=671",
-    --             label = "Outside",
-    --         },
-    --     },
-    --     shell = "Apartment Furnished",
-    -- }
+    ['Alta Street'] = {
+        label = 'Alta Street',
+        door = { x = -270.99, y = -957.76, z = 31.22, h = 116.62, length = 1, width = 2 },
+        imgs = {
+            {
+                url = "https://cdn.discordapp.com/attachments/967905287673618512/1135346605944471783/image.png",
+                label = "Outside",
+            },
+        },
+        shell = "House 1",
+    }
 }
 
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
@@ -553,6 +553,34 @@ Config.Shells = {
                 label = "Room",
             },
         },
+    },
+
+    ["Apartment"] = {
+        label = "Apartment",
+        hash = `lev_apartment_shell`,
+        doorOffset = { x = 0.311096, y = -2.248718, z = -1.524582, h = 88.434860, width = 2.0 },
+        stash = {
+            maxweight = 100000, 
+            slots = 12,
+        },
+        imgs = {
+            {
+                url = "https://cdn.discordapp.com/attachments/967905287673618512/1135344684361842698/5.png",
+                label = "Desk",
+            },
+            {
+                url = "https://cdn.discordapp.com/attachments/967905287673618512/1135344684764504256/4.png",
+                label = "Bedroom",
+            },
+            {
+                url = "https://cdn.discordapp.com/attachments/967905287673618512/1135344685108441138/3.png",
+                label = "Room",
+            },
+            {
+                url = "https://cdn.discordapp.com/attachments/967905287673618512/1135344685985038356/1.png",
+                label = "TV",
+            },
+        }
     },
 }
 
