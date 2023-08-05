@@ -41,7 +41,7 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     return PropertiesTable
 end)
 
-AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
+AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job -- Illenium-appearance (https://discord.com/channels/897744257237000222/1136654609843232820/1136654609843232820)
     local propertyData = propertyData
 
     propertyData.owner = propertyData.owner or nil
@@ -84,14 +84,69 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         Wait(1000)
 
-        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
-
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
 
         -- This will create the stash for the apartment and migrate the items from the old apartment stash if applicable
         TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
+
+        local appearance = MySQL.scalar.await("SELECT skin FROM playerskins WHERE citizenid = ?", {propertyData.owner})
+        if not appearance then
+            TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        end
     end
 end)
+
+-- AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
+--     local propertyData = propertyData
+
+--     propertyData.owner = propertyData.owner or nil
+--     propertyData.has_access = propertyData.has_access or {}
+--     propertyData.extra_imgs = propertyData.extra_imgs or {}
+--     propertyData.furnitures = propertyData.furnitures or {}
+--     propertyData.door_data = propertyData.door_data or {}
+--     propertyData.garage_data = propertyData.garage_data or {}
+    
+--     local cols = "(owner_citizenid, street, region, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
+--     local vals = "(@owner_citizenid, @street, @region, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
+
+--     local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
+--         ["@owner_citizenid"] = propertyData.owner or nil,
+--         ["@street"] = propertyData.street,
+--         ["@region"] = propertyData.region,
+--         ["@description"] = propertyData.description,
+--         ["@has_access"] = json.encode(propertyData.has_access),
+--         ["@extra_imgs"] = json.encode(propertyData.extra_imgs),
+--         ["@furnitures"] = json.encode(propertyData.furnitures),
+--         ["@for_sale"] = propertyData.for_sale ~= nil and propertyData.for_sale or 1,
+--         ["@price"] = propertyData.price or 0,
+--         ["@shell"] = propertyData.shell,
+--         ["@apartment"] = propertyData.apartment,
+--         ["@door_data"] = json.encode(propertyData.door_data),
+--         ["@garage_data"] = json.encode(propertyData.garage_data),
+--     })
+--     id = tostring(id)
+--     propertyData.property_id = id
+--     PropertiesTable[id] = Property:new(propertyData)
+    
+--     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
+
+--     if propertyData.apartment then
+--         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
+--         local src = player.PlayerData.source
+
+--         local property = Property.Get(id)
+--         property:PlayerEnter(src)
+
+--         Wait(1000)
+
+--         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+
+--         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
+
+--         -- This will create the stash for the apartment and migrate the items from the old apartment stash if applicable
+--         TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
+--     end
+-- end)
 
 lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     Debug("ps-housing:cb:GetOwnedApartment", source, cid)
@@ -157,7 +212,7 @@ RegisterNetEvent("ps-housing:server:createApartmentStash", function(citizenId, p
     end
 
     -- This will create the stash for the apartment (without requiring player to have first opened and placed item in it)
-    TriggerEvent('qb-inventory:server:SaveStashItems', stashId, items)
+    TriggerEvent('ps-inventory:server:SaveStashItems', stashId, items)
 end)
 
 RegisterNetEvent('qb-apartments:returnBucket', function()
