@@ -11,6 +11,7 @@ Config.Target = "ox" -- "ox" or "qb"
 Config.Notify = "qb" -- "ox" or "qb"
 Config.Radial = "qb" -- "ox" or "qb"
 Config.Inventory = "qb" -- "ox" or "qb"
+Config.Logs = "qb" -- "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
@@ -24,6 +25,9 @@ function Debug(...)
     end
 end
 
+-- Log System
+Config.EnableLogs = true
+
 -- Enables Dynamic Doors
 Config.DynamicDoors = false
 
@@ -36,9 +40,19 @@ Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid 
 
 Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
 
-Config.RaidTimer = 5-- 5 minutes
+Config.RaidTimer = 5  -- 5 minutes
 
-Config.RealtorJobName = "realtor" -- Set your Real Estate job here
+Config.RaidItem = "police_stormram"  -- The item required to raid a property
+
+-- If you are using ox_inventory, it is encouraged to use the consume property within data/items.lua and keeping this config option false
+Config.ConsumeRaidItem = false          -- Whether or not to consume the raid item upon successful entry.
+
+Config.RealtorJobName = "realestate" -- Set your Real Estate job here
+
+-- Set this value to true if ur using qb-management
+-- and want the Money go straight into the Realestate Bank Account.
+-- Using different Boss Menu? -> replace the qb-management export
+Config.QBManagement = false
 
 -- Realtor Commisions based on job grade, the rest goes to the owner, if any.
 Config.Commissions = {
@@ -46,10 +60,14 @@ Config.Commissions = {
     [1] = 0.10,
     [2] = 0.15,
     [3] = 0.20,
+    [4] = 0.25,
 }
 
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
+
+--- With this enabled, the customizer will open when starting apartment is false.
+Config.ShowCustomizerWhenNoStartingApartment = true
 
 Config.Apartments = {
     ["Integrity Way"] = {
@@ -57,7 +75,7 @@ Config.Apartments = {
         door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566754983972954/986BKLz.jpg",
                 label = "Outside",
             },
         },
@@ -69,7 +87,7 @@ Config.Apartments = {
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566767864684665/FKTQq4b.jpg",
                 label = "Outside",
             },
         },
@@ -81,7 +99,7 @@ Config.Apartments = {
         door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016905298021/morningwood.webp?width=1280&height=671",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566730363412582/amZDmz7.jpg",
                 label = "Outside",
             },
         },
@@ -93,7 +111,7 @@ Config.Apartments = {
         door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                url = "https://cdn.discordapp.com/attachments/1108364246342963322/1140163262315495494/tinsel.webp",
                 label = "Outside",
             },
         },
@@ -105,7 +123,7 @@ Config.Apartments = {
         door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016221638686/fantasticplaza.webp?width=1281&height=671",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566742589800629/SgK60IR.jpg",
                 label = "Outside",
             },
         },
@@ -481,15 +499,15 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
+                url = "https://i.imgur.com/ddg9zHU.jpeg",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimgs.cc/C1YYmqpD/angle2.webp",
+                url = "https://i.imgur.com/4rvkeme.jpeg",
                 label = "Angle 2",
             },
             {
-                url = "https://i.postimgs.cc/26wYJSCt/entry.webp",
+                url = "https://i.imgur.com/4QAcZBp.jpeg",
                 label = "Entrance",
             },
         },
@@ -1298,6 +1316,21 @@ Config.Furnitures = {
             { ["object"] = "prop_grumandoor_r", ["price"] = 300, ["type"] = "door", ["label"] = "Golden Snake Door" },
             { ["object"] = "prop_motel_door_09", ["price"] = 300, ["type"] = "door", ["label"] = "Motel Door" },
             { ["object"] = "prop_fnclink_03gate5", ["price"] = 300, ["type"] = "door", ["label"] = "Chainlink Fence" },
+        }
+    },
+
+    {
+        category = "Walls",
+        items = {
+            { ["object"] = "ps_wall_aqua", ["price"] = 1000, ["label"] = "Aqua Wall" },
+            { ["object"] = "ps_wall_black", ["price"] = 1000, ["label"] = "Black Wall" },
+            { ["object"] = "ps_wall_green", ["price"] = 1000, ["label"] = "Green Wall" },
+            { ["object"] = "ps_wall_grey", ["price"] = 1000, ["label"] = "Grey Wall" },
+            { ["object"] = "ps_wall_purple", ["price"] = 1000, ["label"] = "Purple Wall" },
+            { ["object"] = "ps_wall_red", ["price"] = 1000, ["label"] = "Red Wall" },
+            { ["object"] = "ps_wall_white", ["price"] = 1000, ["label"] = "White Wall" },
+            { ["object"] = "ps_wall_yellow", ["price"] = 1000, ["label"] = "Yellow Wall" },
+            { ["object"] = "ps_wall_wall", ["price"] = 1000, ["label"] = "Brick Wall" },
         }
     },
 

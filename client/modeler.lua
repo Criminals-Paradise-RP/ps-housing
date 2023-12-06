@@ -219,10 +219,12 @@ Modeler = {
             objectPos = GetEntityCoords(curObject)
             objectRot = GetEntityRotation(curObject)
         else 
+            local hash = GetHashKey(object)
+            if not IsModelInCdimage(hash) then return end
             self:StopPlacement()
-            lib.requestModel(object)
+            lib.requestModel(hash)
 
-            curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
+            curObject = CreateObject(hash, 0.0, 0.0, 0.0, false, true, false)
             SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
 
             objectRot = GetEntityRotation(curObject)
@@ -326,8 +328,19 @@ Modeler = {
     -- everytime "Stop Placement" is pressed on an owned object, it will update the furniture 
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
+        DeleteEntity(item.entity)
+
+        local hash = GetHashKey(item.object)
+        lib.requestModel(hash)
+
+        if not IsModelInCdimage(hash) then return end
+
         local newPos = GetEntityCoords(item.entity)
         local newRot = GetEntityRotation(item.entity)
+
+        item.entity = CreateObject(GetHashKey(item.object), newPos.x, newPos.y, newPos.z, false, true, false)
+        SetEntityRotation(item.entity, newRot.x, newRot.y, newRot.z)
+        FreezeEntityPosition(item.entity, true)
 
         local offsetPos = {
                 x = math.floor((newPos.x - self.shellPos.x) * 10000) / 10000,
@@ -342,6 +355,7 @@ Modeler = {
             position = offsetPos,
             rotation = newRot,
             type = item.type,
+            movedObject = true
         }
 
         TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, newFurniture)
@@ -439,7 +453,7 @@ Modeler = {
             totalPrice = totalPrice + v.price
         end
 
-        local PlayerData = QBCore.Functions.GetPlayerData()
+        PlayerData = QBCore.Functions.GetPlayerData()
         if PlayerData.money.cash < totalPrice and PlayerData.money.bank < totalPrice then
 	    Framework[Config.Notify].Notify("You don't have enough money!", "error")
             return
@@ -475,15 +489,36 @@ Modeler = {
     end,
 
     HoverIn = function (self, data)
-        self:HoverOut()
-        local object = data.object
+        if self.HoverObject then
+            local tries = 0
+            while DoesEntityExist(self.HoverObject) do
+                SetEntityAsMissionEntity(self.HoverObject, true, true)
+                DeleteEntity(self.HoverObject)
+                Wait(50)
+                tries = tries + 1
+                if tries > 25 then
+                    break
+                end
+            end
+
+            self.HoverObject = nil
+        end
+
+        local isDoor = false
+        local object = data.object or nil
         if object == nil then return end
 
-        lib.requestModel(object)
-        self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
-        Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
-        local camRot = Freecam:GetRotation()
+        local hash = GetHashKey(object)
+        if not IsModelInCdimage(hash) then return end
+        lib.requestModel(hash)
+        if self.HoverObject then return end
+        if data.type == "door" then isDoor = true end
 
+        self.HoverObject = CreateObject(hash, 0.0, 0.0, 0.0, false, false, isDoor)
+
+        Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
+
+        local camRot = Freecam:GetRotation()
         SetEntityCoords(self.HoverObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
         FreezeEntityPosition(self.HoverObject, true)
         SetEntityCollision(self.HoverObject, false, false)
@@ -499,8 +534,19 @@ Modeler = {
 
     HoverOut = function (self)
         if self.HoverObject == nil then return end
-        DeleteEntity(self.HoverObject)
-        self.HoverObject = nil
+        if self.HoverObject and self.HoverObject ~= 0 then
+            local tries = 0
+            while DoesEntityExist(self.HoverObject) do
+                SetEntityAsMissionEntity(self.HoverObject, true, true)
+                DeleteEntity(self.HoverObject)
+                Wait(50)
+                tries = tries + 1
+                if tries > 25 then
+                    break
+                end
+            end
+            self.HoverObject = nil
+        end
         self.IsHovering = false
     end,
 
