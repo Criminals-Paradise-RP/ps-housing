@@ -52,7 +52,7 @@ Config.RealtorJobName = "realestate" -- Set your Real Estate job here
 -- Set this value to true if ur using qb-management
 -- and want the Money go straight into the Realestate Bank Account.
 -- Using different Boss Menu? -> replace the qb-management export
-Config.QBManagement = false
+Config.QBManagement = true
 
 -- Realtor Commisions based on job grade, the rest goes to the owner, if any.
 Config.Commissions = {
