@@ -51,6 +51,7 @@ function Property:PlayerEnter(src)
 
     local bucket = tonumber(self.property_id) -- because the property_id is a string
     SetPlayerRoutingBucket(src, bucket)
+    Player(src).state:set('instance', bucket, true)
 end
 
 function Property:PlayerLeave(src)
@@ -70,6 +71,7 @@ function Property:PlayerLeave(src)
     end
 
     SetPlayerRoutingBucket(src, 0)
+    Player(src).state:set('instance', 0, true)
 end
 
 function Property:CheckForAccess(citizenid)
@@ -289,7 +291,7 @@ function Property:UpdateOwner(data)
     local totalAfterCommission = self.propertyData.price - commission
 
     if Config.QBManagement then
-        exports['qb-management']:AddMoney(Config.RealtorJobName, totalAfterCommission)
+        exports['qb-banking']:AddMoney(Config.RealtorJobName, totalAfterCommission)
     else
         if prevPlayer ~= nil then
             Framework[Config.Notify].Notify(prevPlayer.PlayerData.source, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id, "success")

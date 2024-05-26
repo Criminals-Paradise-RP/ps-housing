@@ -237,8 +237,6 @@ function Property:LeaveShell()
         self.exitTarget = nil
     end
 
-    self:RemoveBlip()
-
     self:RemoveMenus()
 
     self.doorbellPool = {}
@@ -488,9 +486,10 @@ function Property:UnloadFurniture(furniture, index)
         end
     end
 
-    if index and self.furnitureObjs?[index] then
-        table.remove(self.furnitureObjs, index)
-    else 
+    SetEntityAsMissionEntity(entity, true, true)
+    DeleteEntity(entity)
+
+    if not index then
         for i = 1, #self.furnitureObjs do
             if self.furnitureObjs[i]?.id and furniture?.id and self.furnitureObjs[i].id == furniture.id then
                 table.remove(self.furnitureObjs, i)
@@ -498,8 +497,6 @@ function Property:UnloadFurniture(furniture, index)
             end
         end
     end
-
-    DeleteObject(entity)
 end
 
 function Property:UnloadFurnitures()
